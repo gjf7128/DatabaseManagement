@@ -4,7 +4,7 @@ import os
 
 def connect():
     config = {}
-    yml_path = os.path.join(os.path.dirname(__file__), '../config/db.yml')
+    yml_path = os.path.join(os.path.dirname(__file__), './config/db.yml')
     with open(yml_path, 'r') as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
     return psycopg2.connect(dbname=config['database'],
@@ -46,3 +46,10 @@ def exec_commit(sql, args={}):
     conn.commit()
     conn.close()
     return result
+
+def main():
+    print("Starting")
+    print(exec_get_all("SELECT COUNT(*) FROM authors"))
+    print("Finished")
+
+main()
