@@ -19,7 +19,7 @@ def execute_sql(sql, args={}):
                             user=config['user'],
                             password=config['password'],
                             host=config['host'],
-                            port=config['port'])
+                            port=server.local_bind_port)
             cur = conn.cursor()
             cur.execute(sql, args)
             conn.commit()
