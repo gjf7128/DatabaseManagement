@@ -34,4 +34,11 @@ def execute_sql(sql, args={}):
 def main():
     print(execute_sql("SELECT COUNT(*) FROM authors"))
 
+def addBookToCollection(collectionid, bookid):
+    #Users can add and delete books from their collection
+    #columns of collection are: collectionid, name, userid
+    #insert into contains table (bookid, columnid) VALUES (book.id, collection.id)
+    sqlStatement = 'INSERT INTO contains(collectionid, bookid) VALUES ()'
+    return sqlStatement
+
 main()
