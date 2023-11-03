@@ -35,10 +35,17 @@ def main():
     print(execute_sql("SELECT COUNT(*) FROM authors"))
 
 def addBookToCollection(collectionid, bookid):
-    #Users can add and delete books from their collection
-    #columns of collection are: collectionid, name, userid
-    #insert into contains table (bookid, columnid) VALUES (book.id, collection.id)
-    sqlStatement = 'INSERT INTO contains(collectionid, bookid) VALUES ()'
+    #Users can add and delete books from their collection Requirement
+    #This function is just for ADDING
+    #Use this function like this: cur.execute(addBookToCollection(collectionid, bookid))
+    sqlStatement = 'INSERT INTO contains(collectionid, bookid) VALUES ({}, {})'.format(collectionid, bookid)
+    return sqlStatement
+
+def deleteBookFromCollection(collectionid, bookid):
+    #Users can add and delete books from their collection Requirement
+    #This function is just for DELETING
+    #Use this function like this: cur.execute(deleteBookFromCollection(collectionid, bookid))
+    sqlStatement = 'DELETE FROM contains WHERE collectionid= {} AND bookid= {}'.format(collectionid, bookid)
     return sqlStatement
 
 main()
