@@ -31,6 +31,16 @@ def execute_sql(sql, args={}):
         print("Connection failed\n")
         print(e)
 
+def read_book(book_id, person_id, start_page, end_page, date):
+    # User can read book by selecting the page to start and the page to end
+    # There is no read functionality for the user, user should only be able to mark a book as read
+    # Function ADDS a new row to "read" table where the book being read, user reading, ammount of pages read, and the date where this rading took place is recorded
+    # Function still needs work
+    pagesRead = end_page - start_page
+    sqlStatement = 'INSERT INTO read(bookid, userid, pages, date) VALUES ({}, {}, {})'.format(book_id, person_id, pagesRead, date)
+
+    
+
 def main():
     print(execute_sql("SELECT COUNT(*) FROM authors"))
 
