@@ -21,7 +21,7 @@ def execute_sql(sql, args={}):
                             host=config['host'],
                             port=server.local_bind_port)
             cur = conn.cursor()
-            cur.execute(sql, args)
+            cur.execute(sql)
             conn.commit()
             list_of_tuples = cur.fetchall()
             conn.close()
@@ -31,7 +31,56 @@ def execute_sql(sql, args={}):
         print("Connection failed\n")
         print(e)
 
+def search_books_by_name(title):
+    sql_query = "SELECT * FROM book WHERE title LIKE '%" + title + "%';"
+    return execute_sql(sql_query)
+
+def search_books_by_release_date_before(date):
+    sql_query = "SELECT * FROM book WHERE releasedate > " + date + ";"
+    return execute_sql(sql_query)
+
+def search_books_by_release_date_after(date):
+    sql_query = "SELECT * FROM book WHERE releasedate < " + date + ";"
+    return execute_sql(sql_query)
+
+def search_books_by_author(author):
+    sql_query = """SELECT * FROM person LEFT JOIN authors ON person.personID = authors.personID 
+                    LEFT JOIN book ON authors.bookID = book.bookID WHERE person.firstname = """ + author + ";"
+    return execute_sql(sql_query)
+
+def search_books_by_editor(editor):
+    sql_query = """SELECT * FROM person LEFT JOIN edits ON person.personID = editors.personID 
+                    LEFT JOIN book ON editors.bookID = book.bookID WHERE person.firstname = """ + editor + ";"
+    return execute_sql(sql_query)
+
+def search_books_by_publisher(publisher):
+    sql_query = """SELECT * FROM person LEFT JOIN publishes ON person.personID = publishes.personID 
+                    LEFT JOIN book ON publishes.bookID = book.bookID WHERE person.firstname = """ + publisher + ";"
+    return execute_sql(sql_query)
+
+def search_books_by_genre(genre):
+    sql_query = """SELECT * FROM genre LEFT JOIN bookgenre ON genre.genreID = bookgenre.genreID
+                    LEFT JOIN book ON book.bookID = bookgenre.bookID where genre.name = """ + genre + ";"
+    return execute_sql(sql_query)
+
+def create_collection(userid, collection_name):
+    sql_query = """INSERT INTO collection(name) VALUES(""" + collection_name + ");"
+    execute_sql(sql_query)
+    sql_query = """SELECT collectionid FROM collection where collection_name = """ + collection_name + ";"
+    collectionid = execute_sql(sql_query)
+    sql_query = """INSERT INTO createcollection(userid, collection id) VALUES (""" + userid + ',' + collectionid + ");"
+
+def get_collections(userid):
+    sql_query = """SELECT collection.name, COUNT(contains.BookID), SUM(book.Length) FROM 
+                    User JOIN createCollection ON UserID = createCollection.UserID 
+                    JOIN collection ON createCollection.CollectionID = collection.CollectionID
+                    LEFT JOIN contains ON collection.CollectionID = contains.CollectionID
+                    LEFT JOIN book ON contains.BookID = book.BookID
+                    WHERE UserID = """ + str(userid) + """ GROUP BY collection.CollectionID, collection.Name ORDER BY collection.CollectionID;"""
+    return execute_sql(sql_query)
+
+
 def main():
-    print(execute_sql("SELECT COUNT(*) FROM authors"))
+    print(search_books_by_author(""))
 
 main()
