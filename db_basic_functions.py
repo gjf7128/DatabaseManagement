@@ -74,4 +74,25 @@ def change_name_of_collection(user_id):
     return sql_statement
 
 
+def delete_collection(user_id):
+    # Users can modify the name of a collection. They can also delete an entire collection Requirement
+
+    # Prompting the user to get name of collection they want to delete
+    name_of_collection_to_delete = input('Enter name of collection to be re-named')
+
+    # appending % to the beginning of the string to make LIKE clause work
+    name_of_collection_to_delete = '%' + name_of_collection_to_delete
+
+    # This slightly complex query will get us the exact unique collectionId we want in order to find the exact
+    # collection name that needs to be changed
+    collection_id = execute_sql('SELECT collection.collectionid FROM collection INNER JOIN createcollection '
+                                'ON collection.collectionid = createcollection.collectionid '
+                                'WHERE name LIKE {} AND userid={}').format(name_of_collection_to_delete, user_id)
+
+    # Finally updating/changing the name of the old collection to the new one
+    sql_statement = 'DELETE FROM collection WHERE name={} WHERE collectionid={}'.format(name_of_collection_to_delete,
+                                                                                        collection_id)
+    return sql_statement
+
+
 main()
