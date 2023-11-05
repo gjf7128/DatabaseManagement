@@ -122,18 +122,14 @@ def follow(userID):
     while(True):
         if(command == "help"):
             print("""Collections Commands:\n
-                        \tFollow: View Your Collections\n
-                        \tUnfollow: Create New Collection\n
-                        \tSearch: Delete Collection""")
+                        \tFollow: Follow the Indicated User\n
+                        \tUnfollow: Unfollow the Indicated User""")
         elif(command == "follow"):
             email = input("Enter Email: ")
-            # put follow here #
+            db_basic_functions.follow_user(userID, email)
         elif(command == "unfollow"):
             email = input("Enter Email: ")
-            # put unfollow here #
-        elif(command == "search"):
-            email = input("Enter Email: ")
-            # put get user by email here #
+            db_basic_functions.unfollow_user(userID, email)
         elif(command == "quit"):
             break
 

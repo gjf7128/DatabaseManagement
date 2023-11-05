@@ -88,8 +88,20 @@ def get_collections(userid):
                     WHERE UserID = """ + str(userid) + """ GROUP BY collection.CollectionID, collection.Name ORDER BY collection.CollectionID;"""
     return execute_sql(sql_query)
 
+def follow_user(userID, otherEmail):
+    sql_query = "SELECT userid from users where email = '" + otherEmail + "';"
+    otherUser = execute_sql(sql_query)[0][0]
+    sql_query = "INSERT INTO followers(followerid, followeeid) VALUES(" + str(userID) + "," + str(otherUser) + ");"
+    execute_sql(sql_query)
+
+def unfollow_user(userID, otherEmail):
+    sql_query = "SELECT userid from users where email = '" + otherEmail + "';"
+    otherUser = execute_sql(sql_query)[0][0]
+    sql_query = "DELETE FROM followers WHERE followerID = " + str(userID) + " AND followeeID = " + str(otherUser) + ";"
+    execute_sql(sql_query)
+
 def main():
-    print(get_collections(3))
+    unfollow_user(5, "johndoe@example.com")
 
 if __name__ == "__main__":
     main()
