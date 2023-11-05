@@ -102,6 +102,7 @@ def collection(userID):
         elif(command == "create"):
             cname = input("Enter Collection Name: ")
             # put create collection here #
+            db_basic_functions.create_collection(userID, cname)
         elif (command == "rate"):
             db_basic_functions.rate_book(userID)
         elif (command == "change name"):
