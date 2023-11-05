@@ -68,7 +68,7 @@ def execute_sql_fetch_one(sql, args={}):
 
 def main():
     print(execute_sql("SELECT COUNT(*) FROM authors"))
-    delete_collection(94)
+    delete_collection(69)
 
 
 
@@ -99,27 +99,40 @@ def insert_into_collection_for_testing(collectionid, bookid):
 def change_name_of_collection(user_id):
     # Users can modify the name of a collection. They can also delete an entire collection Requirement
 
-    # Prompting the user to get name of collection they want to change and what they want to change it to
-    name_of_collection_to_change = input('Enter name of collection to be re-named')
-    name_of_new_collection = input('Enter new name of collection')
+    # Displaying a table of collections for the user
+    print(execute_sql("""SELECT collection.collectionid, collection.name FROM collection INNER JOIN createcollection 
+                                ON collection.collectionid = createcollection.collectionid 
+                                WHERE userid='{}'""".format(user_id)))
 
-    # appending % to the beginning of the string to make LIKE clause work
-    name_of_collection_to_change = name_of_collection_to_change
-    # name_of_collection_to_change = name_of_collection_to_change + '%'
+    # Prompting the user to get name of collection they want to change and what they want to change it to
+    # %% must be appended to the beginning of name_of_collection_to_change for LIKE clause to work
+    name_of_collection_to_change = "%%" + input('Enter name of collection to be re-named:')
+    name_of_new_collection = input('Enter new name of collection:')
 
     # This slightly complex query will get us the exact unique collectionId we want in order to find the exact
     # collection that needs it's name changed
-    collection_id = execute_sql('SELECT collection.collectionid FROM collection INNER JOIN createcollection '
-                                'ON collection.collectionid = createcollection.collectionid '
-                                'WHERE name LIKE {} AND userid = %{}').format(name_of_collection_to_change, user_id)
+    collection_id = execute_sql_fetch_one("""SELECT collection.collectionid FROM collection INNER JOIN createcollection 
+                                ON collection.collectionid = createcollection.collectionid 
+                                WHERE name LIKE '{}' AND userid='{}'""".format(name_of_collection_to_change, user_id))
 
     # Finally updating/changing the name of the old collection to the new one
-    sql_statement = 'UPDATE collection SET name={} WHERE collectionid={}'.format(name_of_new_collection, collection_id)
-    return sql_statement
+    sql_statement = "UPDATE collection SET name='{}' WHERE collectionid='{}'".format(name_of_new_collection, collection_id[0])
+    execute_sql(sql_statement)
+
+    # Showing output of collection table after name change
+    print('collection table after update:')
+    print(execute_sql("""SELECT collection.collectionid, collection.name FROM collection INNER JOIN createcollection 
+                                    ON collection.collectionid = createcollection.collectionid 
+                                    WHERE userid='{}'""".format(user_id)))
 
 
 def delete_collection(user_id):
     # Users can modify the name of a collection. They can also delete an entire collection Requirement
+
+    # Displaying a table of collections for the user
+    print(execute_sql("""SELECT collection.collectionid, collection.name FROM collection INNER JOIN createcollection 
+                                    ON collection.collectionid = createcollection.collectionid 
+                                    WHERE userid='{}'""".format(user_id)))
 
     # Prompting the user to get name of collection they want to delete
     name_of_collection_to_delete = input('Enter name of collection to be deleted:')
@@ -144,6 +157,12 @@ def delete_collection(user_id):
     # Finally deleting the desired collection
     sql_statement = "DELETE FROM collection WHERE collectionid={}".format(collection_id[0])
     execute_sql(sql_statement)
+
+    # Showing output of collection table after name change
+    print('collection table after deletion:')
+    print(execute_sql("""SELECT collection.collectionid, collection.name FROM collection INNER JOIN createcollection 
+                                        ON collection.collectionid = createcollection.collectionid 
+                                        WHERE userid='{}'""".format(user_id)))
 
 
 main()
