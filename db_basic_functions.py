@@ -68,7 +68,7 @@ def execute_sql_fetch_one(sql, args={}):
 
 def main():
     print(execute_sql("SELECT COUNT(*) FROM authors"))
-    delete_collection(97)
+    delete_collection(94)
 
 
 
@@ -141,11 +141,6 @@ def delete_collection(user_id):
     # collection_id = int(str(collection_id[0])[1:-2])
     # print(collection_id_what)
     # pdb.set_trace()
-
-    # collection_id = execute_sql("SELECT collection.collectionid FROM collection INNER JOIN createcollection ON collection.collectionid = createcollection.collectionid WHERE name LIKE {} AND userid={}").format(name_of_collection_to_delete, user_id)
-
-    # Have to delete the record from contains table first since collectionid is a foreign key in contains
-    execute_sql("DELETE FROM contains where collectionid={} AND userid={}".format(collection_id[0], user_id))
     # Finally deleting the desired collection
     sql_statement = "DELETE FROM collection WHERE collectionid={}".format(collection_id[0])
     execute_sql(sql_statement)
