@@ -40,7 +40,7 @@ def read_book(book_id, person_id, start_page, end_page):
     sqlStatement = 'INSERT INTO read(bookid, userid, pages) VALUES ({}, {}, {})'.format(book_id, person_id, pagesRead)
     execute_sql(sqlStatement)
 
-def search_books_by_name(title):
+def search_books_by_title(title):
     sql_query = "SELECT * FROM book WHERE title LIKE '%" + title + "%';"
     return execute_sql(sql_query)
 
@@ -91,4 +91,5 @@ def get_collections(userid):
 def main():
     print(get_collections(3))
 
-main()
+if __name__ == "__main__":
+    main()
