@@ -7,15 +7,14 @@ def register():
     email = input("Please Enter Your Email: ")
     uname = input("Please Enter a Username: ")
     password = input("Please Enter a Password: ")
-    # Put in the register function here #
-    return login()
+    db_basic_functions.register(uname, password, fname, lname, email)
+    return login(uname, password)
 
 def login(uname="", password=""):
     if(uname == "" and password == ""):
         uname = input("Enter Username: ")
         password = input("Enter Password: ")
-    # Put in Login function here #
-    return -1
+    return db_basic_functions.login(uname, password)
 
 def help():
     print("""CKF Main Menu Commands: \n

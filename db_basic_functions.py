@@ -31,6 +31,23 @@ def execute_sql(sql, args={}):
         print("Connection failed\n")
         print(e)
 
+def register(username, password, fname, lname, email):
+    sql_query = "SELECT userid FROM USERS ORDER BY accountcreated DESC LIMIT 1;"
+    newest = execute_sql(sql_query)[0][0] + 1
+    value_template = "(" + str(newest) + ",'" + username + "','" + password + "','" + fname + "','" + lname + "','" + email + "',CURRENT_DATE,CURRENT_DATE);"
+    value_string = str.format(value_template, {username, password, fname, lname, email})
+    sql_query = "INSERT INTO users(userid, username, password, firstname, lastname, email, accountcreated, lastaccessed) VALUES" + value_string
+    execute_sql(sql_query)
+
+def login(username, password):
+    sql_query = "SELECT userID,password FROM USERS WHERE username = '" + username + "';"
+    try:
+        user = execute_sql(sql_query)[0]
+        if(password == user[1]):
+            return user[0]
+    except:
+        return -1
+
 def read_book(book_id, person_id, start_page, end_page):
     # User can read book by selecting the page to start and the page to end
     # There is no read functionality for the user, user should only be able to mark a book as read
@@ -101,7 +118,7 @@ def unfollow_user(userID, otherEmail):
     execute_sql(sql_query)
 
 def main():
-    unfollow_user(5, "johndoe@example.com")
+    print(register("user98", "password98", "Jensen", "DeRosier", "jld3877@rit.edu"))
 
 if __name__ == "__main__":
     main()
