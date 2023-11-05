@@ -89,28 +89,29 @@ def collection(userID):
     while(True):
         if(command == "help"):
             print("""Collections Commands:\n
-                        \tView: View Your Collections\n
-                        \tCreate: Create New Collection\n
-                        \tDelete: Delete Collection\n
-                        \tAdd: Add Book to Collection\n
-                        \tRemove: Remove Book from Collection\n""")
+                        \tview: View Your Collections\n
+                        \tcreate: Create New Collection\n
+                        \tdelete: Delete Collection\n
+                        \tadd: Add Book to Collection\n
+                        \tchange name: Change Name of Collection\n
+                        \trate: Rate a book\n
+                        \tremove: Remove Book from Collection\n""")
         elif(command == "view"):
             print("Here is all of your Collections:")
             print(db_basic_functions.get_collections(userID))
         elif(command == "create"):
             cname = input("Enter Collection Name: ")
             # put create collection here #
+        elif (command == "rate"):
+            db_basic_functions.rate_book(userID)
+        elif (command == "change name"):
+            db_basic_functions.change_name_of_collection(userID)
         elif(command == "delete"):
-            cname = input("Enter Collection Name: ")
-            # put delete collection here #
+            db_basic_functions.delete_collection(userID)
         elif(command == "add"):
-            cname = input("Enter Collection Name: ")
-            bname = input("Enter Book Name Here: ")
-            # put add to collection here #
+            db_basic_functions.add_book_to_collection(userID)
         elif(command == "remove"):
-            cname = input("Enter Collection Name: ")
-            bname = input("Enter Book Name Here: ")
-            # put remove from collection here #
+            db_basic_functions.delete_book_from_collection(userID)
         elif(command == "quit"):
             break
         command = input("Enter Command (Collection):").lower()
