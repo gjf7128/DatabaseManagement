@@ -66,13 +66,6 @@ def execute_sql_fetch_one(sql, args={}):
         print(e)
 
 
-def main():
-    print(execute_sql("SELECT COUNT(*) FROM authors"))
-    rate_book(7)
-
-
-
-
 def rate_book(user_id):
 
     print(execute_sql("SELECT title FROM book"))
