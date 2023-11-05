@@ -174,14 +174,6 @@ def delete_book_from_collection(user_id):
                                             WHERE collectionid='{}'""".format(collection_id[0])))
 
 
-# def insert_into_collection_for_testing(collectionid, bookid):
-#     # Users can add and delete books from their collection Requirement
-#     # This function is just for ADDING
-#     # This function still needs work
-#     sqlStatement = 'INSERT INTO contains(collectionid, bookid) VALUES ({}, {})'.format(collectionid, bookid)
-#     return execute_sql(sqlStatement)
-
-
 def change_name_of_collection(user_id):
     # Users can modify the name of a collection. They can also delete an entire collection Requirement
 
