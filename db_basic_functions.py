@@ -68,7 +68,25 @@ def execute_sql_fetch_one(sql, args={}):
 
 def main():
     print(execute_sql("SELECT COUNT(*) FROM authors"))
-    add_book_to_collection(7)
+    rate_book(7)
+
+
+
+
+def rate_book(user_id):
+
+    print(execute_sql("SELECT title FROM book"))
+    book_to_rate = "%%" + input("Enter name of book you'd like to rate:")
+    rating_to_give = input("Enter a rating of 1-5:")
+
+    book_id_to_rate = execute_sql_fetch_one("SELECT bookid FROM book WHERE title LIKE '{}'".format(book_to_rate))
+
+    sql_statement = "INSERT INTO rated (bookid, userid, rating) VALUES ('{}', '{}', '{}')".format(book_id_to_rate[0], user_id, rating_to_give)
+    execute_sql(sql_statement)
+
+    print(execute_sql("""SELECT book.bookid, book.title, rated.rating FROM rated INNER JOIN book 
+                                            ON rated.bookid = book.bookid 
+                                            WHERE rated.userid='{}'""".format(user_id)))
 
 
 def add_book_to_collection(user_id):
