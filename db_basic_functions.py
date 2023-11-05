@@ -68,16 +68,50 @@ def execute_sql_fetch_one(sql, args={}):
 
 def main():
     print(execute_sql("SELECT COUNT(*) FROM authors"))
-    delete_book_from_collection(7)
+    add_book_to_collection(7)
 
 
-
-def addBookToCollection(collectionid, bookid):
+def add_book_to_collection(user_id):
     # Users can add and delete books from their collection Requirement
-    # This function is just for ADDING
-    # This function still needs work
-    sqlStatement = 'INSERT INTO contains(collectionid, bookid) VALUES ({}, {})'.format(collectionid, bookid)
-    return execute_sql(sqlStatement)
+
+    print(execute_sql("""SELECT collection.collectionid, collection.name FROM collection INNER JOIN createcollection 
+                                        ON collection.collectionid = createcollection.collectionid 
+                                        WHERE userid='{}'""".format(user_id)))
+
+    # Prompting the user to get name of the collection, need %% to make LIKE
+    # clause work
+    name_of_collection = "%%" + input("Which collection would you like to add a book to?")
+
+    # This slightly complex query will get us the exact unique collectionId we want in order to find the exact
+    # collection that needs a book added to it
+    collection_id = execute_sql_fetch_one("""SELECT collection.collectionid FROM collection INNER JOIN createcollection 
+                                        ON collection.collectionid = createcollection.collectionid 
+                                        WHERE name LIKE '{}' AND userid='{}'""".format(name_of_collection,
+                                                                                       user_id))
+
+    print("Here is your collection of books:")
+    print(execute_sql("""SELECT book.bookid, book.title, book.length, book.audience, book.releasedate FROM book INNER JOIN contains 
+                                            ON book.bookid = contains.bookid 
+                                            WHERE collectionid='{}'""".format(collection_id[0])))
+
+    # Prompting the user to get necessary credentials for adding a book, need %% to make LIKE
+    name_of_book = input("Enter title of book you would like to add:")
+    length = input("Enter title length:")
+
+    new_book_id = execute_sql_fetch_one("SELECT COUNT(bookid) FROM book")
+
+    sql_statement = "INSERT INTO book (bookid, title, length) VALUES ('{}', '{}', '{}')".format(new_book_id[0] + 1, name_of_book, length)
+    execute_sql(sql_statement)
+
+    sql_statement = "INSERT INTO contains (bookid, collectionid) VALUES ('{}', '{}')".format(new_book_id[0] + 1,
+                                                                                                collection_id[0])
+    execute_sql(sql_statement)
+
+    # Showing output of book table after adding
+    print('book table within your collection after adding:')
+    print(execute_sql("""SELECT book.bookid, book.title, book.length, book.audience, book.releasedate FROM book INNER JOIN contains 
+                                                ON book.bookid = contains.bookid 
+                                                WHERE collectionid='{}'""".format(collection_id[0])))
 
 
 def delete_book_from_collection(user_id):
@@ -98,7 +132,7 @@ def delete_book_from_collection(user_id):
                                     WHERE name LIKE '{}' AND userid='{}'""".format(name_of_collection,
                                                                                    user_id))
 
-    print(execute_sql("""SELECT book.bookid, book.title FROM book INNER JOIN contains 
+    print(execute_sql("""SELECT book.bookid, book.title, book.length, book.audience, book.releasedate FROM book INNER JOIN contains 
                                         ON book.bookid = contains.bookid 
                                         WHERE collectionid='{}'""".format(collection_id[0])))
 
