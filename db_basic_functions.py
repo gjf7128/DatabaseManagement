@@ -15,7 +15,6 @@ def execute_sql(sql, args={}):
                                 ssh_password=config['password'],
                                 remote_bind_address=('127.0.0.1', 5432)) as server:
             server.start()
-            print("SSH tunnel established")
             conn = psycopg2.connect(dbname=config['database'],
                                     user=config['user'],
                                     password=config['password'],
@@ -125,7 +124,7 @@ def search_books_by_genre(genre):
 def create_collection(userid, collection_name):
     sql_query = """INSERT INTO collection(name) VALUES('""" + collection_name + "');"
     execute_sql(sql_query)
-    sql_query = """SELECT collectionid FROM collection where collection_name = '""" + collection_name + "';"
+    sql_query = """SELECT collectionid FROM collection where name = '""" + collection_name + "';"
     collectionid = execute_sql(sql_query)
     sql_query = """INSERT INTO createcollection(userid, collection id) VALUES (""" + userid + ',' + collectionid + ");"
 
