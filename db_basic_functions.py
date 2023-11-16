@@ -323,5 +323,13 @@ def delete_collection(user_id):
                                         WHERE userid='{}'""".format(user_id)))
 
 
+def get_num_collections_for_user(user_id):
+    # The number of collections the user has requirement
+    collections_table = execute_sql_fetch_one("""SELECT COUNT(*) FROM (SELECT collection.collectionid, collection.name inneralias FROM collection INNER JOIN createcollection 
+                                    ON collection.collectionid = createcollection.collectionid 
+                                    WHERE userid='{}') outeralias""".format(user_id))
+
+    print(collections_table[0])
+
 if __name__ == "__main__":
     main()
