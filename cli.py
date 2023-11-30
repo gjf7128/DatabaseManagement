@@ -25,7 +25,7 @@ def help():
                 \tHelp: Bring Up This Menu\n
                 \tQuit: Quit Out of the System""")
 
-def search(userID):
+def search(user_id):
     print("Search for Books:")
     command = input("Enter Command (or help):").lower()
     while(True):
@@ -41,11 +41,11 @@ def search(userID):
                         \ttop rated: Displays your top 10 books based on rating\n
                         \ttop combo: Displays your top 10 books based on timer's read and rating\n""")
         elif(command == "top combo"):
-            db_basic_functions.get_users_top_ten_books_combo(userID)
+            db_basic_functions.get_users_top_ten_books_combo(user_id)
         elif(command == "top rated"):
-            db_basic_functions.get_users_top_ten_books_rating(userID)
+            db_basic_functions.get_users_top_ten_books_rating(user_id)
         elif(command == "top read"):
-            db_basic_functions.get_users_top_ten_books_times_read(userID)
+            db_basic_functions.get_users_top_ten_books_times_read(user_id)
         elif(command == "title"):
             title = input("Input a Title:")
             print("Here's What I Found:")
@@ -123,9 +123,9 @@ def collection(user_id):
             db_basic_functions.add_book_to_collection(user_id)
         elif(command == "remove"):
             db_basic_functions.delete_book_from_collection(user_id)
-            db_basic_functions.delete_book_from_collection(userID)
+            db_basic_functions.delete_book_from_collection(user_id)
         elif(command == "quantity"):
-            db_basic_functions.get_num_collections_for_user(userID)
+            db_basic_functions.get_num_collections_for_user(user_id)
         elif(command == "quit"):
             break
         command = input("Enter Command (Collection):").lower()
@@ -145,12 +145,11 @@ def follow(user_id):
             db_basic_functions.follow_user(user_id, email)
         elif(command == "unfollow"):
             email = input("Enter Email: ")
-            db_basic_functions.unfollow_user(userID, email)
-        elif(command == "following"):
-            db_basic_functions.get_num_users_this_user_follows(userID)
-        elif(command == "followed"):
-            db_basic_functions.get_num_followers_this_user_has(userID)
             db_basic_functions.unfollow_user(user_id, email)
+        elif(command == "following"):
+            db_basic_functions.get_num_users_this_user_follows(user_id)
+        elif(command == "followed"):
+            db_basic_functions.get_num_followers_this_user_has(user_id)
         elif(command == "quit"):
             break
 
@@ -194,7 +193,7 @@ def main():
         if(command == "help"):
             help()
         elif(command == "search"):
-            search(userID)
+            search(user_id)
         elif(command == "read"):
             read(user_id)
         elif(command == "collection"):
