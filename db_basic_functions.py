@@ -15,6 +15,7 @@ def execute_sql(sql, args={}):
                                 ssh_password=config['password'],
                                 remote_bind_address=('127.0.0.1', 5432)) as server:
             server.start()
+            print("SSH tunnel established")
             conn = psycopg2.connect(dbname=config['database'],
                                     user=config['user'],
                                     password=config['password'],
@@ -97,6 +98,10 @@ def search_books_by_release_date_before(date):
     sql_query = "SELECT * FROM book WHERE releasedate < CAST('" + date + "' as date);"
     return execute_sql(sql_query)
 
+def search_books_by_release_date_after(date):
+    sql_query = "SELECT * FROM book WHERE releasedate > CAST('" + date + "' as date);"
+    return execute_sql(sql_query)
+
 def search_books_by_author(author):
     sql_query = """SELECT * FROM person LEFT JOIN authors ON person.personID = authors.personID 
                     LEFT JOIN book ON authors.bookID = book.bookID WHERE person.firstname = '""" + author + "';"
@@ -120,7 +125,7 @@ def search_books_by_genre(genre):
 def create_collection(userid, collection_name):
     sql_query = """INSERT INTO collection(name) VALUES('""" + collection_name + "');"
     execute_sql(sql_query)
-    sql_query = """SELECT collectionid FROM collection where name = '""" + collection_name + "';"
+    sql_query = """SELECT collectionid FROM collection where collection_name = '""" + collection_name + "';"
     collectionid = execute_sql(sql_query)
     sql_query = """INSERT INTO createcollection(userid, collection id) VALUES (""" + userid + ',' + collectionid + ");"
 
@@ -144,6 +149,9 @@ def unfollow_user(userID, otherEmail):
     otherUser = execute_sql(sql_query)[0][0]
     sql_query = "DELETE FROM followers WHERE followerID = " + str(userID) + " AND followeeID = " + str(otherUser) + ";"
     execute_sql(sql_query)
+
+def main():
+    print(register("user98", "password98", "Jensen", "DeRosier", "jld3877@rit.edu"))
 
 def rate_book(user_id):
 
@@ -313,7 +321,7 @@ def delete_collection(user_id):
     print(execute_sql("""SELECT collection.collectionid, collection.name FROM collection INNER JOIN createcollection 
                                         ON collection.collectionid = createcollection.collectionid 
                                         WHERE userid='{}'""".format(user_id)))
-    
+
 def most_pop_90_days():
     sql_query = """SELECT book.Title FROM read JOIN book ON read.bookID = book.bookID
                         WHERE read.date >= CURRENT_DATE - 90 
@@ -367,6 +375,65 @@ def recommend_author_history(user_id):
 
 def main():
     print(most_pop_among_followers(1))
+
+def get_num_collections_for_user(user_id):
+    # The number of collections the user has requirement
+    print('\n now within get_num_collections_for_user')
+    collections_table = execute_sql_fetch_one("""SELECT COUNT(*) FROM (SELECT collection.collectionid, collection.name inneralias FROM collection INNER JOIN createcollection 
+                                    ON collection.collectionid = createcollection.collectionid 
+                                    WHERE userid='{}') outeralias""".format(user_id))
+    print('\n')
+    print(collections_table[0])
+    print('\n')
+
+def get_num_users_this_user_follows(user_id):
+    # The number of users this user follows
+    print('\n getting the number of users this user follows: \n')
+
+    num_followers = execute_sql_fetch_one("""SELECT COUNT(*) FROM followers WHERE followerid='{}'""".format(user_id))
+
+    print(num_followers[0])
+    print('\n')
+
+def get_num_followers_this_user_has(user_id):
+    # The number of followers this user has
+    print('\n getting the number of followers this user has: \n')
+
+    num_followers = execute_sql_fetch_one("""SELECT COUNT(*) FROM followers WHERE followeeid='{}'""".format(user_id))
+
+    print(num_followers[0])
+    print('\n')
+
+def get_users_top_ten_books_times_read(user_id):
+    # Get top 10 books by highest rating, most read, or combination
+    print('\n getting users top ten books by times read \n')
+
+    table = execute_sql("""SELECT book.title FROM read JOIN book ON read.bookid = book.bookid WHERE read.userid = '{}' 
+    GROUP BY book.bookid ORDER BY COUNT(book.bookid) DESC LIMIT 10""".format(user_id))
+
+    print(table)
+    print('\n')
+
+def get_users_top_ten_books_combo(user_id):
+    # Get top 10 books by highest rating, most read, or combination
+    print('\n getting users top ten books by times read and rating \n')
+
+    table = execute_sql("""SELECT book.title, rated.rating FROM read JOIN book ON read.bookid = book.bookid JOIN rated 
+    ON book.bookid = rated.bookid WHERE read.userid = '{}' GROUP BY book.bookid, rated.rating ORDER BY COUNT(book.bookid) 
+    DESC , rated.rating DESC LIMIT 10""".format(user_id))
+
+    print(table)
+    print('\n')
+
+def get_users_top_ten_books_rating(user_id):
+    # Get top 10 books by highest rating, most read, or combination
+    print('\n getting users top ten books by rating \n')
+
+    table = execute_sql("""SELECT book.title, rated.rating FROM rated JOIN book ON rated.bookid = book.bookid WHERE 
+    rated.userid = '{}' ORDER BY rated.rating DESC LIMIT 10""".format(user_id))
+
+    print(table)
+    print('\n')
 
 if __name__ == "__main__":
     main()
