@@ -68,7 +68,7 @@ def search():
             print(db_basic_functions.search_books_by_genre(genre))
         command = input("Enter Command (Search):").lower()
 
-def read(userID):
+def read(user_id):
     while(True):
         title = input("Enter the Title of the Book You Read: ")
         if(title == "quit"):
@@ -81,9 +81,9 @@ def read(userID):
             print("We Could not Find that book, Please Try again (or quit)")
     start = input("What Page did you start on?: ")
     end = input("What Page did you end on?: ")
-    db_basic_functions.read_book(bookID, userID, start, end)
+    db_basic_functions.read_book(bookID, user_id, start, end)
 
-def collection(userID):
+def collection(user_id):
     print("Manage Collections:")
     command = input("Enter Command (or help):").lower()
     while(True):
@@ -98,50 +98,75 @@ def collection(userID):
                         \tremove: Remove Book from Collection\n""")
         elif(command == "view"):
             print("Here is all of your Collections:")
-            print(db_basic_functions.get_collections(userID))
+            print(db_basic_functions.get_collections(user_id))
         elif(command == "create"):
             cname = input("Enter Collection Name: ")
             # put create collection here #
-            db_basic_functions.create_collection(userID, cname)
+            db_basic_functions.create_collection(user_id, cname)
         elif (command == "rate"):
-            db_basic_functions.rate_book(userID)
+            db_basic_functions.rate_book(user_id)
         elif (command == "change name"):
-            db_basic_functions.change_name_of_collection(userID)
+            db_basic_functions.change_name_of_collection(user_id)
         elif(command == "delete"):
-            db_basic_functions.delete_collection(userID)
+            db_basic_functions.delete_collection(user_id)
         elif(command == "add"):
-            db_basic_functions.add_book_to_collection(userID)
+            db_basic_functions.add_book_to_collection(user_id)
         elif(command == "remove"):
-            db_basic_functions.delete_book_from_collection(userID)
+            db_basic_functions.delete_book_from_collection(user_id)
         elif(command == "quit"):
             break
         command = input("Enter Command (Collection):").lower()
 
-def follow(userID):
+def follow(user_id):
     print("Follow Users:")
     command = input("Enter Command (or help):").lower()
     while(True):
         if(command == "help"):
-            print("""Collections Commands:\n
+            print("""Follow Commands:\n
                         \tFollow: Follow the Indicated User\n
                         \tUnfollow: Unfollow the Indicated User""")
         elif(command == "follow"):
             email = input("Enter Email: ")
-            db_basic_functions.follow_user(userID, email)
+            db_basic_functions.follow_user(user_id, email)
         elif(command == "unfollow"):
             email = input("Enter Email: ")
-            db_basic_functions.unfollow_user(userID, email)
+            db_basic_functions.unfollow_user(user_id, email)
+        elif(command == "quit"):
+            break
+
+def recommendations(user_id):
+    print("Book Recommendation System:")
+    command = input("Enter Command (or help):").lower()
+    while(True):
+        if(command == "help"):
+            print("""Recommendations Commands:\n
+                        \t90: Display Most Popular Books of the last 90 Days\n
+                        \tFollowers: Most Popular Books Among Your Followers\n
+                        \tMonth: Most Popular Books of this Month\n
+                        \tGenre: Books Based on Your Read History (By Genre)\n
+                        \tAuthor: Books Based on Your Read History (By Author)\n
+                    `   \tQuit: Quit to Main Menu""")
+        elif(command == "90"):
+            print(db_basic_functions.most_pop_90_days())
+        elif(command == "followers"):
+            print(db_basic_functions.most_pop_among_followers(user_id))
+        elif(command == "month"):
+            print(db_basic_functions.top_5_calendar_month())
+        elif(command == "genre"):
+            print(db_basic_functions.recommend_genre_history(user_id))
+        elif(command == "author"):
+            print(db_basic_functions.recommend_author_history(user_id))
         elif(command == "quit"):
             break
 
 def main():
     print("Welcome to the CKF Library System!")
     command = input("Please Enter Your Username (or register to sign up):")
-    userID = -1
+    user_id = -1
     if(command == "register"):
-        userID = register()
+        user_id = register()
     else:
-        userID = login()
+        user_id = login()
 
     # Primary CLI loop
     command = input("Enter a Command (or help):").lower()
@@ -151,11 +176,11 @@ def main():
         elif(command == "search"):
             search()
         elif(command == "read"):
-            read(userID)
+            read(user_id)
         elif(command == "collection"):
-            collection(userID)
+            collection(user_id)
         elif(command == "follow"):
-            follow(userID)
+            follow(user_id)
         elif(command == "quit"):
             print("Thank You for using our system, have a nice day!")
             break

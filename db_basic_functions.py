@@ -97,10 +97,6 @@ def search_books_by_release_date_before(date):
     sql_query = "SELECT * FROM book WHERE releasedate < CAST('" + date + "' as date);"
     return execute_sql(sql_query)
 
-def search_books_by_release_date_after(date):
-    sql_query = "SELECT * FROM book WHERE releasedate > CAST('" + date + "' as date);"
-    return execute_sql(sql_query)
-
 def search_books_by_author(author):
     sql_query = """SELECT * FROM person LEFT JOIN authors ON person.personID = authors.personID 
                     LEFT JOIN book ON authors.bookID = book.bookID WHERE person.firstname = '""" + author + "';"
@@ -148,9 +144,6 @@ def unfollow_user(userID, otherEmail):
     otherUser = execute_sql(sql_query)[0][0]
     sql_query = "DELETE FROM followers WHERE followerID = " + str(userID) + " AND followeeID = " + str(otherUser) + ";"
     execute_sql(sql_query)
-
-def main():
-    print(register("user98", "password98", "Jensen", "DeRosier", "jld3877@rit.edu"))
 
 def rate_book(user_id):
 
@@ -320,7 +313,60 @@ def delete_collection(user_id):
     print(execute_sql("""SELECT collection.collectionid, collection.name FROM collection INNER JOIN createcollection 
                                         ON collection.collectionid = createcollection.collectionid 
                                         WHERE userid='{}'""".format(user_id)))
+    
+def most_pop_90_days():
+    sql_query = """SELECT book.Title FROM read JOIN book ON read.bookID = book.bookID
+                        WHERE read.date >= CURRENT_DATE - 90 
+                        GROUP BY book.bookID ORDER BY COUNT(book.bookID) DESC
+                        LIMIT 20;"""
+    return(execute_sql(sql_query))
 
+def most_pop_among_followers(user_id):
+    sql_query = """SELECT book.title 
+                    FROM followers JOIN read ON followers.followerID = read.userID
+                    JOIN book ON read.bookID = book.bookID
+                    WHERE followers.followeeID = """ + (str)(user_id) + """
+                    GROUP BY book.bookID ORDER BY COUNT(book.bookID)
+                    LIMIT 20;
+                    """
+    return(execute_sql(sql_query))
+
+def top_5_calendar_month():
+    sql_query = """SELECT title FROM book JOIN read ON book.bookID = read.bookID
+                    WHERE EXTRACT(MONTH FROM releasedate) = EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(YEAR FROM releasedate) = EXTRACT(YEAR FROM CURRENT_DATE)
+                    GROUP BY book.bookID ORDER BY COUNT(book.bookID)"""
+    return(execute_sql(sql_query))
+
+def recommend_genre_history(user_id):
+    sql_query = """WITH UserGenres AS (
+                    SELECT genre.genreID, AVG(rated.rating) as AvgRating
+                    FROM rated JOIN bookgenre ON rated.bookID = bookgenre.BookID
+                    JOIN genre ON bookgenre.genreID = genre.genreID
+                    WHERE rated.userID = """ + str(user_id) + """
+                    GROUP BY genre.genreID)
+
+                    SELECT book.title
+                    FROM usergenres JOIN bookgenre on usergenres.genreID = bookgenre.genreID
+                    JOIN book ON book.bookID = bookgenre.bookID
+                    ORDER BY AvgRating DESC LIMIT 10;"""
+    return(execute_sql(sql_query))
+
+def recommend_author_history(user_id):
+    sql_query = """WITH UserFavAuthors AS (
+                    SELECT personID, AVG(rated.rating) as AvgRating
+                    FROM rated JOIN authors ON rated.bookID = authors.bookID
+                    WHERE rated.userID = """ + str(user_id) + """
+                    GROUP BY authors.personID)
+
+                    SELECT book.Title
+                    FROM UserFavAuthors JOIN authors on UserFavAuthors.personID = authors.personID
+                    JOIN book ON book.bookID = authors.bookID
+                    ORDER BY AvgRating DESC LIMIT 10;"""
+    return(execute_sql(sql_query))
+
+
+def main():
+    print(most_pop_among_followers(1))
 
 if __name__ == "__main__":
     main()
