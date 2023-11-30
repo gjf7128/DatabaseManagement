@@ -150,8 +150,10 @@ def unfollow_user(userID, otherEmail):
     sql_query = "DELETE FROM followers WHERE followerID = " + str(userID) + " AND followeeID = " + str(otherUser) + ";"
     execute_sql(sql_query)
 
-def main():
-    print(register("user98", "password98", "Jensen", "DeRosier", "jld3877@rit.edu"))
+# here to help testing
+# def main():
+    # print(register("user98", "password98", "Jensen", "DeRosier", "jld3877@rit.edu"))
+
 
 def rate_book(user_id):
 
@@ -325,11 +327,62 @@ def delete_collection(user_id):
 
 def get_num_collections_for_user(user_id):
     # The number of collections the user has requirement
+    print('\n now within get_num_collections_for_user')
     collections_table = execute_sql_fetch_one("""SELECT COUNT(*) FROM (SELECT collection.collectionid, collection.name inneralias FROM collection INNER JOIN createcollection 
                                     ON collection.collectionid = createcollection.collectionid 
                                     WHERE userid='{}') outeralias""".format(user_id))
-
+    print('\n')
     print(collections_table[0])
+    print('\n')
+
+def get_num_users_this_user_follows(user_id):
+    # The number of users this user follows
+    print('\n getting the number of users this user follows: \n')
+
+    num_followers = execute_sql_fetch_one("""SELECT COUNT(*) FROM followers WHERE followerid='{}'""".format(user_id))
+
+    print(num_followers[0])
+    print('\n')
+
+def get_num_followers_this_user_has(user_id):
+    # The number of followers this user has
+    print('\n getting the number of followers this user has: \n')
+
+    num_followers = execute_sql_fetch_one("""SELECT COUNT(*) FROM followers WHERE followeeid='{}'""".format(user_id))
+
+    print(num_followers[0])
+    print('\n')
+
+def get_users_top_ten_books_times_read(user_id):
+    # Get top 10 books by highest rating, most read, or combination
+    print('\n getting users top ten books by times read \n')
+
+    table = execute_sql("""SELECT book.title FROM read JOIN book ON read.bookid = book.bookid WHERE read.userid = '{}' 
+    GROUP BY book.bookid ORDER BY COUNT(book.bookid) DESC LIMIT 10""".format(user_id))
+
+    print(table)
+    print('\n')
+
+def get_users_top_ten_books_combo(user_id):
+    # Get top 10 books by highest rating, most read, or combination
+    print('\n getting users top ten books by times read and rating \n')
+
+    table = execute_sql("""SELECT book.title, rated.rating FROM read JOIN book ON read.bookid = book.bookid JOIN rated 
+    ON book.bookid = rated.bookid WHERE read.userid = '{}' GROUP BY book.bookid, rated.rating ORDER BY COUNT(book.bookid) 
+    DESC , rated.rating DESC LIMIT 10""".format(user_id))
+
+    print(table)
+    print('\n')
+
+def get_users_top_ten_books_rating(user_id):
+    # Get top 10 books by highest rating, most read, or combination
+    print('\n getting users top ten books by rating \n')
+
+    table = execute_sql("""SELECT book.title, rated.rating FROM rated JOIN book ON rated.bookid = book.bookid WHERE 
+    rated.userid = '{}' ORDER BY rated.rating DESC LIMIT 10""".format(user_id))
+
+    print(table)
+    print('\n')
 
 if __name__ == "__main__":
     main()
