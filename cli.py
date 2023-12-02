@@ -180,6 +180,7 @@ def recommendations(user_id):
             print(db_basic_functions.recommend_author_history(user_id))
         elif(command == "quit"):
             break
+        command = input("Enter Command (or help):").lower()
 
 def main():
     print("Welcome to the CKF Library System!")
