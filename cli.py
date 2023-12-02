@@ -23,6 +23,7 @@ def help():
                 \tCollection: Create/Manage Collections of Books\n
                 \tFollow: Follow Other Users\n
                 \tHelp: Bring Up This Menu\n
+                \tRecommendation: recommondation system\n
                 \tQuit: Quit Out of the System""")
 
 def search(user_id):
@@ -50,6 +51,8 @@ def search(user_id):
             title = input("Input a Title:")
             print("Here's What I Found:")
             print(db_basic_functions.search_books_by_title(title))
+        elif (command == "quit"):
+            break
         elif(command == "date"):
             date = input("Input a Date:")
             print("Here's What I Found:")
@@ -200,6 +203,8 @@ def main():
             collection(user_id)
         elif(command == "follow"):
             follow(user_id)
+        elif(command =="recommendation"):
+            recommendations(user_id)
         elif(command == "quit"):
             print("Thank You for using our system, have a nice day!")
             break

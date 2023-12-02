@@ -422,6 +422,7 @@ def get_users_top_ten_books_combo(user_id):
     ON book.bookid = rated.bookid WHERE read.userid = '{}' GROUP BY book.bookid, rated.rating ORDER BY COUNT(book.bookid) 
     DESC , rated.rating DESC LIMIT 10""".format(user_id))
 
+
     print(table)
     print('\n')
 
