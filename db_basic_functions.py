@@ -32,7 +32,7 @@ def execute_sql(sql, args={}):
         print("Connection failed\n")
         print(e)
 
-
+#by gjf7128
 def execute_sql_fetch_one(sql, args={}):
     # Use this function when you're only expecting to get 1 value back from a select query so that you can easily use
     # result[0] to grab the value you want instead of having to do all of this nonsense just to collect an id in int
@@ -153,6 +153,7 @@ def unfollow_user(userID, otherEmail):
 def main():
     print(register("user98", "password98", "Jensen", "DeRosier", "jld3877@rit.edu"))
 
+#by gjf7128
 def rate_book(user_id):
 
     print(execute_sql("SELECT title FROM book"))
@@ -169,6 +170,7 @@ def rate_book(user_id):
                                             WHERE rated.userid='{}'""".format(user_id)))
 
 
+#by gjf7128
 def add_book_to_collection(user_id):
     # Users can add and delete books from their collection Requirement
 
@@ -212,6 +214,7 @@ def add_book_to_collection(user_id):
                                                 WHERE collectionid='{}'""".format(collection_id[0])))
 
 
+#by gjf7128
 def delete_book_from_collection(user_id):
     # Users can add and delete books from their collection Requirement
 
@@ -254,6 +257,7 @@ def delete_book_from_collection(user_id):
                                             WHERE collectionid='{}'""".format(collection_id[0])))
 
 
+#by gjf7128
 def change_name_of_collection(user_id):
     # Users can modify the name of a collection. They can also delete an entire collection Requirement
 
@@ -284,6 +288,7 @@ def change_name_of_collection(user_id):
                                     WHERE userid='{}'""".format(user_id)))
 
 
+#by gjf7128
 def delete_collection(user_id):
     # Users can modify the name of a collection. They can also delete an entire collection Requirement
 
@@ -376,6 +381,7 @@ def recommend_author_history(user_id):
 def main():
     print(most_pop_among_followers(1))
 
+#by gjf7128
 def get_num_collections_for_user(user_id):
     # The number of collections the user has requirement
     print('\n now within get_num_collections_for_user')
@@ -386,6 +392,7 @@ def get_num_collections_for_user(user_id):
     print(collections_table[0])
     print('\n')
 
+#by gjf7128
 def get_num_users_this_user_follows(user_id):
     # The number of users this user follows
     print('\n getting the number of users this user follows: \n')
@@ -395,6 +402,7 @@ def get_num_users_this_user_follows(user_id):
     print(num_followers[0])
     print('\n')
 
+#by gjf7128
 def get_num_followers_this_user_has(user_id):
     # The number of followers this user has
     print('\n getting the number of followers this user has: \n')
@@ -404,6 +412,7 @@ def get_num_followers_this_user_has(user_id):
     print(num_followers[0])
     print('\n')
 
+#by gjf7128
 def get_users_top_ten_books_times_read(user_id):
     # Get top 10 books by highest rating, most read, or combination
     print('\n getting users top ten books by times read \n')
@@ -414,6 +423,7 @@ def get_users_top_ten_books_times_read(user_id):
     print(table)
     print('\n')
 
+#by gjf7128
 def get_users_top_ten_books_combo(user_id):
     # Get top 10 books by highest rating, most read, or combination
     print('\n getting users top ten books by times read and rating \n')
@@ -426,6 +436,7 @@ def get_users_top_ten_books_combo(user_id):
     print(table)
     print('\n')
 
+#by gjf7128
 def get_users_top_ten_books_rating(user_id):
     # Get top 10 books by highest rating, most read, or combination
     print('\n getting users top ten books by rating \n')

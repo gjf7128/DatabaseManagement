@@ -155,6 +155,7 @@ def follow(user_id):
             db_basic_functions.get_num_followers_this_user_has(user_id)
         elif(command == "quit"):
             break
+    command = input("Enter Command (or help):").lower()
 
 def recommendations(user_id):
     print("Book Recommendation System:")
